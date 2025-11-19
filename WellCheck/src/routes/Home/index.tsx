@@ -1,13 +1,24 @@
 export default function Home() {
   return (
-    <div>
-      <h1 className="text-3xl font-bold mb-4">
-        Bem-estar e Saúde Mental no Trabalho
-      </h1>
+    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100 px-6">
+      <div className="max-w-3xl text-center">
+        <h1 className="text-4xl font-bold text-gray-800 mb-4">
+          Bem-vindo ao Sistema de Gestão
+        </h1>
 
-      <p className="text-lg max-w-2xl mx-auto">
-        Plataforma para monitoramento de bem-estar, hábitos e saúde mental de colaboradores.
-      </p>
+        <p className="text-gray-600 text-lg">
+          Um sistema completo para gerenciamento de usuários, alertas, tarefas e hábitos diários.
+        </p>
+
+        <div className="mt-8">
+          <a
+            href="/dashboard"
+            className="px-6 py-3 bg-blue-600 text-white rounded-lg shadow hover:bg-blue-700 transition"
+          >
+            Acessar Dashboard
+          </a>
+        </div>
+      </div>
     </div>
   );
 }

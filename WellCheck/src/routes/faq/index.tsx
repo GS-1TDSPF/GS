@@ -1,16 +1,40 @@
-export default function Faq() {
+export default function FAQ() {
+  const faqs = [
+    {
+      pergunta: "O que este sistema faz?",
+      resposta:
+        "Gerencia usuários, alertas, tarefas e hábitos diários com CRUD completo conectado ao Oracle."
+    },
+    {
+      pergunta: "Como os dados são armazenados?",
+      resposta:
+        "A API Java envia e recebe informações diretamente de um banco Oracle usando JDBC."
+    },
+    {
+      pergunta: "Este site é responsivo?",
+      resposta:
+        "Sim! Ele foi projetado usando TailwindCSS, garantindo adaptação para qualquer tela."
+    }
+  ];
+
   return (
-    <div className="p-6">
-      <h1 className="text-xl font-bold mb-4">FAQ - Perguntas Frequentes</h1>
+    <div className="min-h-screen bg-gray-50 px-6 py-16">
+      <div className="max-w-3xl mx-auto">
+        <h1 className="text-3xl font-bold mb-8">Perguntas Frequentes</h1>
 
-      <div className="mb-4">
-        <h2 className="font-semibold">Como os dados são monitorados?</h2>
-        <p>As informações são enviadas pelo colaborador diariamente.</p>
-      </div>
-
-      <div className="mb-4">
-        <h2 className="font-semibold">A plataforma é segura?</h2>
-        <p>Sim, todas as requisições usam HTTPS.</p>
+        <div className="space-y-6">
+          {faqs.map((f, index) => (
+            <div
+              key={index}
+              className="bg-white shadow p-5 rounded-lg border border-gray-200"
+            >
+              <h2 className="text-xl font-semibold text-gray-800">
+                {f.pergunta}
+              </h2>
+              <p className="text-gray-600 mt-2">{f.resposta}</p>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );

@@ -1,37 +1,36 @@
 import { useEffect, useState } from "react";
 
-interface Usuario {
+interface Checkin {
+    id_checkin: number;
     id_usuario: number;
-    nome: string;
-    email: string;
-    senha: string;
-    cargo: string;
+    data: string;
+    humor: string;
+    comentario: string;
 }
 
-export default function Usuarios() {
-    const [usuarios, setUsuarios] = useState<Usuario[]>([]);
-    const [form, setForm] = useState<Omit<Usuario, "id_usuario">>({
-        nome: "",
-        email: "",
-        senha: "",
-        cargo: ""
+export default function Checkins() {
+    const [checkins, setCheckins] = useState<Checkin[]>([]);
+    const [form, setForm] = useState<Omit<Checkin, "id_checkin">>({
+        id_usuario: 0,
+        data: "",
+        humor: "",
+        comentario: ""
     });
-
     const [editId, setEditId] = useState<number | null>(null);
 
-    const API = "http://localhost:8080/usuarios";
+    const API = "http://localhost:8080/checkins";
 
     async function carregar() {
         const r = await fetch(API);
         const data = await r.json();
-        setUsuarios(data);
+        setCheckins(data);
     }
 
     useEffect(() => {
         carregar();
     }, []);
 
-    function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
+    function handleChange(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
         setForm({ ...form, [e.target.name]: e.target.value });
     }
 
@@ -47,18 +46,18 @@ export default function Usuarios() {
             body: JSON.stringify(form)
         });
 
-        setForm({ nome: "", email: "", senha: "", cargo: "" });
+        setForm({ id_usuario: 0, data: "", humor: "", comentario: "" });
         setEditId(null);
         carregar();
     }
 
-    function editar(u: Usuario) {
-        setEditId(u.id_usuario);
+    async function editar(item: Checkin) {
+        setEditId(item.id_checkin);
         setForm({
-            nome: u.nome,
-            email: u.email,
-            senha: u.senha,
-            cargo: u.cargo
+            id_usuario: item.id_usuario,
+            data: item.data,
+            humor: item.humor,
+            comentario: item.comentario
         });
     }
 
@@ -69,50 +68,44 @@ export default function Usuarios() {
 
     return (
         <div className="p-6 max-w-4xl mx-auto">
-            <h1 className="text-3xl font-bold mb-4">Usuários</h1>
+            <h1 className="text-3xl font-bold mb-4">Check-ins</h1>
 
+            {/* Formulário */}
             <form onSubmit={salvar} className="bg-white shadow p-4 rounded mb-6">
                 <div className="grid grid-cols-2 gap-4">
-
+                    <input
+                        type="number"
+                        name="id_usuario"
+                        placeholder="ID do Usuário"
+                        value={form.id_usuario}
+                        onChange={handleChange}
+                        className="border p-2 rounded"
+                        required
+                    />
+                    <input
+                        type="date"
+                        name="data"
+                        value={form.data}
+                        onChange={handleChange}
+                        className="border p-2 rounded"
+                        required
+                    />
                     <input
                         type="text"
-                        name="nome"
-                        placeholder="Nome"
-                        value={form.nome}
+                        name="humor"
+                        placeholder="Humor"
+                        value={form.humor}
                         onChange={handleChange}
                         className="border p-2 rounded"
                         required
                     />
-
-                    <input
-                        type="email"
-                        name="email"
-                        placeholder="E-mail"
-                        value={form.email}
+                    <textarea
+                        name="comentario"
+                        placeholder="Comentário"
+                        value={form.comentario}
                         onChange={handleChange}
-                        className="border p-2 rounded"
-                        required
-                    />
-
-                    <input
-                        type="password"
-                        name="senha"
-                        placeholder="Senha"
-                        value={form.senha}
-                        onChange={handleChange}
-                        className="border p-2 rounded"
-                        required
-                    />
-
-                    <input
-                        type="text"
-                        name="cargo"
-                        placeholder="Cargo"
-                        value={form.cargo}
-                        onChange={handleChange}
-                        className="border p-2 rounded"
-                        required
-                    />
+                        className="border p-2 rounded col-span-2"
+                    ></textarea>
                 </div>
 
                 <button className="mt-4 bg-blue-600 text-white px-4 py-2 rounded">
@@ -120,34 +113,34 @@ export default function Usuarios() {
                 </button>
             </form>
 
+            {/* Tabela */}
             <table className="w-full bg-white shadow rounded">
                 <thead>
                     <tr className="border-b">
                         <th className="p-2">ID</th>
-                        <th className="p-2">Nome</th>
-                        <th className="p-2">E-mail</th>
-                        <th className="p-2">Cargo</th>
+                        <th className="p-2">Usuário</th>
+                        <th className="p-2">Data</th>
+                        <th className="p-2">Humor</th>
                         <th className="p-2">Ações</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {usuarios.map(u => (
-                        <tr key={u.id_usuario} className="border-b">
-                            <td className="p-2">{u.id_usuario}</td>
-                            <td className="p-2">{u.nome}</td>
-                            <td className="p-2">{u.email}</td>
-                            <td className="p-2">{u.cargo}</td>
-
+                    {checkins.map(c => (
+                        <tr key={c.id_checkin} className="border-b">
+                            <td className="p-2">{c.id_checkin}</td>
+                            <td className="p-2">{c.id_usuario}</td>
+                            <td className="p-2">{c.data}</td>
+                            <td className="p-2">{c.humor}</td>
                             <td className="p-2 flex gap-2">
                                 <button
-                                    onClick={() => editar(u)}
                                     className="px-3 py-1 bg-yellow-500 text-white rounded"
+                                    onClick={() => editar(c)}
                                 >
                                     Editar
                                 </button>
                                 <button
-                                    onClick={() => excluir(u.id_usuario)}
                                     className="px-3 py-1 bg-red-600 text-white rounded"
+                                    onClick={() => excluir(c.id_checkin)}
                                 >
                                     Excluir
                                 </button>
@@ -156,7 +149,6 @@ export default function Usuarios() {
                     ))}
                 </tbody>
             </table>
-
         </div>
     );
 }

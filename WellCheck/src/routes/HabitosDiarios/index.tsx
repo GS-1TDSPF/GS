@@ -1,37 +1,36 @@
 import { useEffect, useState } from "react";
 
-interface Usuario {
+interface Habito {
+    id_habito: number;
     id_usuario: number;
-    nome: string;
-    email: string;
-    senha: string;
-    cargo: string;
+    titulo: string;
+    descricao: string;
+    concluido: string;
 }
 
-export default function Usuarios() {
-    const [usuarios, setUsuarios] = useState<Usuario[]>([]);
-    const [form, setForm] = useState<Omit<Usuario, "id_usuario">>({
-        nome: "",
-        email: "",
-        senha: "",
-        cargo: ""
+export default function Habitos() {
+    const [habitos, setHabitos] = useState<Habito[]>([]);
+    const [form, setForm] = useState<Omit<Habito, "id_habito">>({
+        id_usuario: 0,
+        titulo: "",
+        descricao: "",
+        concluido: "N"
     });
-
     const [editId, setEditId] = useState<number | null>(null);
 
-    const API = "http://localhost:8080/usuarios";
+    const API = "http://localhost:8080/habitos";
 
     async function carregar() {
         const r = await fetch(API);
         const data = await r.json();
-        setUsuarios(data);
+        setHabitos(data);
     }
 
     useEffect(() => {
         carregar();
     }, []);
 
-    function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
+    function handleChange(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) {
         setForm({ ...form, [e.target.name]: e.target.value });
     }
 
@@ -47,18 +46,18 @@ export default function Usuarios() {
             body: JSON.stringify(form)
         });
 
-        setForm({ nome: "", email: "", senha: "", cargo: "" });
+        setForm({ id_usuario: 0, titulo: "", descricao: "", concluido: "N" });
         setEditId(null);
         carregar();
     }
 
-    function editar(u: Usuario) {
-        setEditId(u.id_usuario);
+    async function editar(h: Habito) {
+        setEditId(h.id_habito);
         setForm({
-            nome: u.nome,
-            email: u.email,
-            senha: u.senha,
-            cargo: u.cargo
+            id_usuario: h.id_usuario,
+            titulo: h.titulo,
+            descricao: h.descricao,
+            concluido: h.concluido
         });
     }
 
@@ -69,36 +68,15 @@ export default function Usuarios() {
 
     return (
         <div className="p-6 max-w-4xl mx-auto">
-            <h1 className="text-3xl font-bold mb-4">Usuários</h1>
+            <h1 className="text-3xl font-bold mb-4">Hábitos Diários</h1>
 
             <form onSubmit={salvar} className="bg-white shadow p-4 rounded mb-6">
                 <div className="grid grid-cols-2 gap-4">
-
                     <input
-                        type="text"
-                        name="nome"
-                        placeholder="Nome"
-                        value={form.nome}
-                        onChange={handleChange}
-                        className="border p-2 rounded"
-                        required
-                    />
-
-                    <input
-                        type="email"
-                        name="email"
-                        placeholder="E-mail"
-                        value={form.email}
-                        onChange={handleChange}
-                        className="border p-2 rounded"
-                        required
-                    />
-
-                    <input
-                        type="password"
-                        name="senha"
-                        placeholder="Senha"
-                        value={form.senha}
+                        type="number"
+                        name="id_usuario"
+                        placeholder="ID do Usuário"
+                        value={form.id_usuario}
                         onChange={handleChange}
                         className="border p-2 rounded"
                         required
@@ -106,13 +84,31 @@ export default function Usuarios() {
 
                     <input
                         type="text"
-                        name="cargo"
-                        placeholder="Cargo"
-                        value={form.cargo}
+                        name="titulo"
+                        placeholder="Título"
+                        value={form.titulo}
                         onChange={handleChange}
                         className="border p-2 rounded"
                         required
                     />
+
+                    <textarea
+                        name="descricao"
+                        placeholder="Descrição"
+                        value={form.descricao}
+                        onChange={handleChange}
+                        className="border p-2 rounded col-span-2"
+                    ></textarea>
+
+                    <select
+                        name="concluido"
+                        value={form.concluido}
+                        onChange={handleChange}
+                        className="border p-2 rounded"
+                    >
+                        <option value="N">Não Concluído</option>
+                        <option value="S">Concluído</option>
+                    </select>
                 </div>
 
                 <button className="mt-4 bg-blue-600 text-white px-4 py-2 rounded">
@@ -124,30 +120,29 @@ export default function Usuarios() {
                 <thead>
                     <tr className="border-b">
                         <th className="p-2">ID</th>
-                        <th className="p-2">Nome</th>
-                        <th className="p-2">E-mail</th>
-                        <th className="p-2">Cargo</th>
+                        <th className="p-2">Usuário</th>
+                        <th className="p-2">Título</th>
+                        <th className="p-2">Concluído</th>
                         <th className="p-2">Ações</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {usuarios.map(u => (
-                        <tr key={u.id_usuario} className="border-b">
-                            <td className="p-2">{u.id_usuario}</td>
-                            <td className="p-2">{u.nome}</td>
-                            <td className="p-2">{u.email}</td>
-                            <td className="p-2">{u.cargo}</td>
-
+                    {habitos.map(h => (
+                        <tr key={h.id_habito} className="border-b">
+                            <td className="p-2">{h.id_habito}</td>
+                            <td className="p-2">{h.id_usuario}</td>
+                            <td className="p-2">{h.titulo}</td>
+                            <td className="p-2">{h.concluido}</td>
                             <td className="p-2 flex gap-2">
                                 <button
-                                    onClick={() => editar(u)}
                                     className="px-3 py-1 bg-yellow-500 text-white rounded"
+                                    onClick={() => editar(h)}
                                 >
                                     Editar
                                 </button>
                                 <button
-                                    onClick={() => excluir(u.id_usuario)}
                                     className="px-3 py-1 bg-red-600 text-white rounded"
+                                    onClick={() => excluir(h.id_habito)}
                                 >
                                     Excluir
                                 </button>

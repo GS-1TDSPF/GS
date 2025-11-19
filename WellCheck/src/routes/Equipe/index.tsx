@@ -1,20 +1,25 @@
-export default function Equipe() {
+export default function Integrantes() {
+  const integrantes = [
+    { nome: "Pedro Sakai", rm: "565956" },
+    { nome: "Kauan Vieira", rm: "RM: 565403" },
+  ];
+
   return (
-    <div className="p-6">
-      <h1 className="text-2xl font-bold mb-6">Equipe</h1>
+    <div className="min-h-screen bg-white px-6 py-16">
+      <div className="max-w-3xl mx-auto">
+        <h1 className="text-3xl font-bold mb-6">Integrantes da Equipe</h1>
 
-      <div className="border p-4 rounded shadow w-64">
-        <img src="/foto.jpg" className="rounded mb-2" />
-        <h2 className="font-bold">Pedro Sakai</h2>
-        <p>RM: 565956</p>
-        <p>Turma: 1TDSPF</p>
-        <a className="text-blue-500" href="https://github.com/sakaipedro">GitHub</a><br />
-        <img src="/foto.jpg" className="rounded mb-2" />
-
-        <h2 className="font-bold">Kauan Vieira</h2>
-        <p>RM: 565403</p>
-        <p>Turma: 1TDSPF</p>
-        <a className="text-blue-500" href="https://github.com/KauanVLima">GitHub</a><br />
+        <ul className="space-y-4">
+          {integrantes.map((i, index) => (
+            <li
+              key={index}
+              className="p-4 bg-gray-100 rounded-lg shadow border border-gray-200"
+            >
+              <p className="text-lg font-semibold">{i.nome}</p>
+              <p className="text-gray-600">RM: {i.rm}</p>
+            </li>
+          ))}
+        </ul>
       </div>
     </div>
   );
