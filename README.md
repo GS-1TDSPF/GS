@@ -1,4 +1,4 @@
-# Ferramentas de Monitoramento de Bem-Estar e Saúde Mental no Trabalho
+# Ferramentas de Monitoramento de Bem-Estar e Saúde Mental no Trabalho - WellCheck
 
 ## Status do Projeto
 - **Status**: Em desenvolvimento
